@@ -1,9 +1,12 @@
-import { Typography } from '@mui/material';
+import { TextField } from '@mui/material';
 
 export default function Home() {
   return (
     <div>
-      <Typography variant="h3">Tabla</Typography>
+      <h1>Tabla</h1>
+      <form>
+        <TextField variant="outlined" />
+      </form>
     </div>
   );
 }

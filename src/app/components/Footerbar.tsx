@@ -1,9 +1,13 @@
+'use client';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import RestoreIcon from '@mui/icons-material/Restore';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import TableChartIcon from '@mui/icons-material/TableChart';
+import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import { useRouter } from 'next/navigation';
+import CategoryIcon from '@mui/icons-material/Category';
 
 export default function FooterBar() {
+  const router = useRouter();
   return (
     <footer
       style={{
@@ -14,9 +18,34 @@ export default function FooterBar() {
       }}
     >
       <BottomNavigation showLabels sx={{ backgroundColor: '#b7b7b7ff' }}>
-        <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-        <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-        <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
+        <BottomNavigationAction
+          label="Gastos"
+          icon={<TableChartIcon />}
+          onClick={() => {
+            router.push('/');
+          }}
+        />
+        <BottomNavigationAction
+          label="Reporte"
+          icon={<RestoreIcon />}
+          onClick={() => {
+            router.push('/report');
+          }}
+        />
+        <BottomNavigationAction
+          label="Gráfico"
+          icon={<SignalCellularAltIcon />}
+          onClick={() => {
+            router.push('/graphic');
+          }}
+        />
+        <BottomNavigationAction
+          label="Categorias"
+          icon={<CategoryIcon />}
+          onClick={() => {
+            router.push('/categories');
+          }}
+        />
       </BottomNavigation>
     </footer>
   );

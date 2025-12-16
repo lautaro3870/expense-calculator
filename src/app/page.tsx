@@ -8,7 +8,7 @@ export default function Home() {
       <form>
         <TextField variant="outlined" />
       </form>
-      <div style={{ height: '30rem' }}>
+      <div style={{ height: '40rem' }}>
         <BasicTable />
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { TextField } from '@mui/material';
+import BasicTable from './components/CustomTable';
 
 export default function Home() {
   return (
@@ -7,6 +8,9 @@ export default function Home() {
       <form>
         <TextField variant="outlined" />
       </form>
+      <div style={{ height: '30rem' }}>
+        <BasicTable />
+      </div>
     </div>
   );
 }

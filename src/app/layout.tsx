@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { StyledRoot } from './StyledRoot';
-import FooterBar from './components/Footerbar'
+import FooterBar from './components/FooterBar';
 
 export const metadata: Metadata = {
   title: 'Create Next App',

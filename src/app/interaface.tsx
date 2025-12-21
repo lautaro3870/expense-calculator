@@ -1,5 +1,5 @@
 export interface Category {
-  id: number;
+  id: string;
   category: string;
 }
 
@@ -7,6 +7,6 @@ export interface Expense {
   id: string;
   amount: number;
   date: string;
-  categoryId: number;
+  categoryId: string;
   categoryName: string;
 }

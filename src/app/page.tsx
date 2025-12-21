@@ -1,5 +1,6 @@
 import { TextField } from '@mui/material';
 import BasicTable from './components/CustomTable';
+import ExpenseForm from './components/ExpenseForm';
 
 export default function Home() {
   return (
@@ -12,9 +13,7 @@ export default function Home() {
       }}
     >
       <h1>Tabla</h1>
-      <form>
-        <TextField variant="outlined" />
-      </form>
+      <ExpenseForm />
       <div
         style={{
           flex: 1,

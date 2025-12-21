@@ -1,5 +1,4 @@
-import { TextField } from '@mui/material';
-import BasicTable from './components/CustomTable';
+import ExpenseTable from './components/ExpenseTable';
 import ExpenseForm from './components/ExpenseForm';
 import ExpenseInfo from './components/ExpenseInfo';
 
@@ -18,6 +17,7 @@ export default function Home() {
       <hr style={{ width: '100%', border: '1px solid' }} />
       <ExpenseInfo />
       <hr style={{ width: '100%', border: '1px solid' }} />
+      <br />
       <div
         style={{
           flex: 1,
@@ -25,7 +25,7 @@ export default function Home() {
           overflow: 'auto',
         }}
       >
-        <BasicTable />
+        <ExpenseTable />
       </div>
     </div>
   );

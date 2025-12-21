@@ -6,7 +6,7 @@ import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import { useRouter } from 'next/navigation';
 import CategoryIcon from '@mui/icons-material/Category';
 
-export default function FooterBar() {
+export default function Footerbar() {
   const router = useRouter();
   return (
     <footer

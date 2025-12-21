@@ -1,6 +1,7 @@
 import { TextField } from '@mui/material';
 import BasicTable from './components/CustomTable';
 import ExpenseForm from './components/ExpenseForm';
+import ExpenseInfo from './components/ExpenseInfo';
 
 export default function Home() {
   return (
@@ -14,6 +15,9 @@ export default function Home() {
     >
       <h1>Tabla</h1>
       <ExpenseForm />
+      <hr style={{ width: '100%', border: '1px solid' }} />
+      <ExpenseInfo />
+      <hr style={{ width: '100%', border: '1px solid' }} />
       <div
         style={{
           flex: 1,

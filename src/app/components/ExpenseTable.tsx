@@ -12,11 +12,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 type ExpenseTableProps = {
   expenses: Expense[];
   categories: Category[];
+  deleteExpense: (id: string) => void;
 };
 
 export default function ExpenseTable({
   categories,
   expenses,
+  deleteExpense,
 }: ExpenseTableProps) {
   return (
     <TableContainer component={Paper} sx={{ height: '100%', overflow: 'auto' }}>
@@ -41,7 +43,11 @@ export default function ExpenseTable({
               <TableCell align="right">{expense.categoryName}</TableCell>
               <TableCell align="right">{expense.date}</TableCell>
               <TableCell align="right">
-                <Button color="error" variant="contained">
+                <Button
+                  color="error"
+                  variant="contained"
+                  onClick={() => deleteExpense(expense.id)}
+                >
                   <DeleteIcon />
                 </Button>
               </TableCell>

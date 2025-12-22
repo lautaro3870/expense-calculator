@@ -5,6 +5,7 @@ import ExpenseInfo from './components/ExpenseInfo';
 import { useEffect, useState } from 'react';
 import { Category, Expense } from './interaface';
 import { v4 as uuidv4 } from 'uuid';
+import Swal from 'sweetalert2';
 
 export default function Home() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -13,9 +14,7 @@ export default function Home() {
   const getExpensesAndCategories = () => {
     const listOfExpenses = window.localStorage.getItem('expenses');
     const listOfCategories = window.localStorage.getItem('categories');
-    const expensesConverted = listOfExpenses
-      ? JSON.parse(listOfExpenses)
-      : [];
+    const expensesConverted = listOfExpenses ? JSON.parse(listOfExpenses) : [];
     const categoriesConverted = listOfCategories
       ? JSON.parse(listOfCategories)
       : [];
@@ -41,8 +40,8 @@ export default function Home() {
     return `${day}/${month}/${year}`;
   };
 
-  const createExpense = (amount: number, category: Category) => {
-    if (!amount || !category.category) return;
+  const createExpense = (amount: number, category: Category): boolean => {
+    if (!amount || !category.category) return false;
     const newExpense: Expense = {
       id: uuidv4(),
       amount,
@@ -53,10 +52,31 @@ export default function Home() {
 
     setExpenses((prev) => [...prev, newExpense]);
     const newList = expenses.concat(newExpense);
-    window.localStorage.setItem(
-      'expenses',
-      JSON.stringify(newList)
-    );
+    window.localStorage.setItem('expenses', JSON.stringify(newList));
+    return true;
+  };
+
+  const deleteExpense = (id: string) => {
+    const newList = expenses.filter((e: Expense) => e.id !== id);
+    setExpenses(newList);
+    window.localStorage.setItem('expenses', JSON.stringify(newList));
+  };
+
+  const deleteAllExpenses = () => {
+    Swal.fire({
+      title: '¿Eliminar todos los gastos?',
+      showDenyButton: true,
+      confirmButtonText: 'Confirmar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire('Eliminados!', '', 'success');
+        const newList: Expense[] = [];
+        setExpenses(newList);
+        window.localStorage.setItem('expenses', JSON.stringify(newList));
+      } else if (result.isDenied) {
+        Swal.close();
+      }
+    });
   };
 
   useEffect(() => {
@@ -73,7 +93,11 @@ export default function Home() {
         marginTop: '3rem',
       }}
     >
-      <ExpenseForm categories={categories} createExpense={createExpense} />
+      <ExpenseForm
+        categories={categories}
+        createExpense={createExpense}
+        deleteAllExpenses={deleteAllExpenses}
+      />
       <hr style={{ width: '100%', border: '1px solid' }} />
       <ExpenseInfo />
       <hr style={{ width: '100%', border: '1px solid' }} />
@@ -85,7 +109,11 @@ export default function Home() {
           overflow: 'auto',
         }}
       >
-        <ExpenseTable categories={categories} expenses={expenses} />
+        <ExpenseTable
+          categories={categories}
+          expenses={expenses}
+          deleteExpense={deleteExpense}
+        />
       </div>
     </div>
   );

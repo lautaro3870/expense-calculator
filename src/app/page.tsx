@@ -99,7 +99,7 @@ export default function Home() {
         deleteAllExpenses={deleteAllExpenses}
       />
       <hr style={{ width: '100%', border: '1px solid' }} />
-      <ExpenseInfo />
+      <ExpenseInfo expenses={expenses}/>
       <hr style={{ width: '100%', border: '1px solid' }} />
       <br />
       <div

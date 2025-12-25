@@ -41,18 +41,23 @@ export default function Home() {
   };
 
   const createExpense = (amount: number, category: Category): boolean => {
-    if (!amount || !category.category) return false;
+    if (!amount || !category?.id) return false;
+
     const newExpense: Expense = {
       id: uuidv4(),
-      amount,
+      amount: Number(amount.toFixed(3)),
       date: getCurrentDateString(),
       categoryId: category.id,
       categoryName: category.category,
+      timestamp: Date.now(),
     };
 
-    setExpenses((prev) => [...prev, newExpense]);
-    const newList = expenses.concat(newExpense);
-    window.localStorage.setItem('expenses', JSON.stringify(newList));
+    setExpenses((prev) => {
+      const updatedExpenses = [newExpense, ...prev];
+      localStorage.setItem('expenses', JSON.stringify(updatedExpenses));
+      return updatedExpenses;
+    });
+
     return true;
   };
 
@@ -99,7 +104,7 @@ export default function Home() {
         deleteAllExpenses={deleteAllExpenses}
       />
       <hr style={{ width: '100%', border: '1px solid' }} />
-      <ExpenseInfo expenses={expenses}/>
+      <ExpenseInfo expenses={expenses} />
       <hr style={{ width: '100%', border: '1px solid' }} />
       <br />
       <div
@@ -107,6 +112,7 @@ export default function Home() {
           flex: 1,
           minHeight: 0,
           overflow: 'auto',
+          marginBottom: '3rem',
         }}
       >
         <ExpenseTable

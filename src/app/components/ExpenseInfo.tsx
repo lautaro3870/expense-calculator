@@ -73,7 +73,7 @@ export default function ExpenseInfo({ expenses }: ExpenseInfoProps) {
         sx={{ display: 'flex', justifyContent: 'space-between', width: 250 }}
       >
         <Typography variant="body1">Gastado: </Typography>
-        <Typography>${totalSpent}</Typography>
+        <Typography>${totalSpent.toFixed(2)}</Typography>
       </Box>
       <Box
         sx={{ display: 'flex', justifyContent: 'space-between', width: 250 }}

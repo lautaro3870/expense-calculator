@@ -9,4 +9,5 @@ export interface Expense {
   date: string;
   categoryId: string;
   categoryName: string;
+  timestamp: number;
 }

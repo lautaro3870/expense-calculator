@@ -8,7 +8,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Category, MonthlyCategoryReport } from '../interaface';
 import { useEffect, useState } from 'react';
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
+import Swal from 'sweetalert2';
 
 export default function Report() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -50,26 +51,6 @@ export default function Report() {
     return months[month[1] as string];
   };
 
-  const getReportFromStorage = (): MonthlyCategoryReport[] => {
-    const raw = localStorage.getItem('expensesReport');
-    if (!raw) return [];
-
-    const parsed = JSON.parse(raw);
-
-    return Object.entries(parsed)
-      .map(([month, categories]) => ({
-        month,
-        categories: Object.values(
-          categories as {
-            categoryId: string;
-            categoryName: string;
-            total: number;
-          }[]
-        ),
-      }))
-      .sort((a, b) => b.month.localeCompare(a.month));
-  };
-
   const calculateTotalSpent = (
     report: MonthlyCategoryReport[],
     categories: Category[] | []
@@ -87,16 +68,51 @@ export default function Report() {
     }, 0);
   };
 
+  const deleteDataReport = () => {
+    Swal.fire({
+      title: '¿Eliminar datos del reporte?',
+      showDenyButton: true,
+      confirmButtonText: 'Confirmar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire('Eliminados!', '', 'success');
+        localStorage.removeItem('expensesReport');
+        setExpensesReport([]);
+        setTotalAmountSpent('');
+      } else if (result.isDenied) {
+        Swal.close();
+      }
+    });
+  };
+
+  const parseReport = (raw: string): MonthlyCategoryReport[] => {
+    const parsed = JSON.parse(raw);
+
+    return Object.entries(parsed)
+      .map(([month, categories]) => ({
+        month,
+        categories: Object.values(
+          categories as {
+            categoryId: string;
+            categoryName: string;
+            total: number;
+          }[]
+        ),
+      }))
+      .sort((a, b) => b.month.localeCompare(a.month));
+  };
+
   useEffect(() => {
     const listOfCategories = localStorage.getItem('categories');
     setCategories(listOfCategories ? JSON.parse(listOfCategories) : []);
-    const report = getReportFromStorage();
-    setExpensesReport(report);
+    const raw = localStorage.getItem('expensesReport');
+    const result = parseReport(raw || '[]');
+    setExpensesReport(raw ? result : []);
     const total = calculateTotalSpent(
-      report,
+      result,
       listOfCategories ? JSON.parse(listOfCategories) : []
     );
-    setTotalAmountSpent(total.toString());
+    setTotalAmountSpent(total.toFixed(2));
   }, []);
 
   return (
@@ -109,9 +125,24 @@ export default function Report() {
         marginTop: '3rem',
       }}
     >
-      <Typography sx={{ margin: '0 auto', marginBottom: '1rem' }}>
-        Total gastado: ${totalAmountSpent || 0}
-      </Typography>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          margin: '0 auto',
+          marginBottom: '1rem',
+        }}
+      >
+        <Typography>Total gastado: ${totalAmountSpent || 0}</Typography>
+        <Button
+          sx={{ width: '2.5rem', margin: '0 auto', marginTop: '1rem' }}
+          variant="contained"
+          color="error"
+          onClick={deleteDataReport}
+        >
+          Limpiar
+        </Button>
+      </div>
       <hr style={{ width: '100%', marginBottom: '1rem' }} />
       <div
         style={{
@@ -168,7 +199,7 @@ export default function Report() {
                     })}
 
                     <TableCell align="right">
-                      <strong>{monthTotal}</strong>
+                      <strong>{monthTotal.toFixed(2)}</strong>
                     </TableCell>
                   </TableRow>
                 );

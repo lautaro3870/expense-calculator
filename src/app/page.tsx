@@ -33,27 +33,42 @@ export default function Home() {
     setCategories(categoriesConverted);
   };
 
-  const updateAnnualReport = (expense: Expense) => {
-    const report = JSON.parse(localStorage.getItem('expensesReport') || '{}');
+  const buildMonthlyReportFromExpenses = (
+    expenses: Expense[]
+  ): Record<
+    string,
+    {
+      categoryId: string;
+      categoryName: string;
+      total: number;
+    }
+  > => {
+    return expenses.reduce((acc, expense) => {
+      if (!acc[expense.categoryId]) {
+        acc[expense.categoryId] = {
+          categoryId: expense.categoryId,
+          categoryName: expense.categoryName,
+          total: 0,
+        };
+      }
 
-    const date = new Date(expense.timestamp);
-    const monthKey = `${date.getFullYear()}-${String(
-      date.getMonth() + 1
+      acc[expense.categoryId].total += expense.amount;
+      return acc;
+    }, {} as Record<string, any>);
+  };
+
+  const persistMonthlyReport = (expenses: Expense[]) => {
+    if (!expenses.length) return;
+
+    const raw = localStorage.getItem('expensesReport');
+    const report = raw ? JSON.parse(raw) : {};
+
+    const now = new Date();
+    const monthKey = `${now.getFullYear()}-${String(
+      now.getMonth() + 1
     ).padStart(2, '0')}`;
 
-    if (!report[monthKey]) {
-      report[monthKey] = {};
-    }
-
-    if (!report[monthKey][expense.categoryId]) {
-      report[monthKey][expense.categoryId] = {
-        categoryId: expense.categoryId,
-        categoryName: expense.categoryName,
-        total: 0,
-      };
-    }
-
-    report[monthKey][expense.categoryId].total += expense.amount;
+    report[monthKey] = buildMonthlyReportFromExpenses(expenses);
 
     localStorage.setItem('expensesReport', JSON.stringify(report));
   };
@@ -78,7 +93,6 @@ export default function Home() {
       localStorage.setItem('expenses', JSON.stringify(updatedExpenses));
       return updatedExpenses;
     });
-    updateAnnualReport(newExpense);
     return true;
   };
 
@@ -109,6 +123,10 @@ export default function Home() {
     getExpensesAndCategories();
     document.getElementById(expenseInputId)?.focus();
   }, []);
+
+  useEffect(() => {
+    persistMonthlyReport(expenses);
+  }, [expenses]);
 
   return (
     <div

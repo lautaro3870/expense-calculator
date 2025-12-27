@@ -70,12 +70,19 @@ export default function Report() {
       .sort((a, b) => b.month.localeCompare(a.month));
   };
 
-  const calculateTotalSpent = (report: MonthlyCategoryReport[]): number => {
+  const calculateTotalSpent = (
+    report: MonthlyCategoryReport[],
+    categories: Category[] | []
+  ): number => {
     return report.reduce((acc, month) => {
-      const monthTotal = month.categories.reduce(
-        (sum, category) => sum + category.total,
-        0
-      );
+      const monthTotal = categories.reduce((sum, category) => {
+        const categoryData = month.categories.find(
+          (c) => c.categoryId === category.id
+        );
+
+        return sum + (categoryData?.total ?? 0);
+      }, 0);
+
       return acc + monthTotal;
     }, 0);
   };
@@ -85,7 +92,10 @@ export default function Report() {
     setCategories(listOfCategories ? JSON.parse(listOfCategories) : []);
     const report = getReportFromStorage();
     setExpensesReport(report);
-    const total = calculateTotalSpent(report);
+    const total = calculateTotalSpent(
+      report,
+      listOfCategories ? JSON.parse(listOfCategories) : []
+    );
     setTotalAmountSpent(total.toString());
   }, []);
 

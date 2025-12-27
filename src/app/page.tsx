@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 export default function Home() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const expenseInputId = 'expense-input';
 
   const getExpensesAndCategories = () => {
     const listOfExpenses = window.localStorage.getItem('expenses');
@@ -106,6 +107,7 @@ export default function Home() {
 
   useEffect(() => {
     getExpensesAndCategories();
+    document.getElementById(expenseInputId)?.focus();
   }, []);
 
   return (
@@ -122,6 +124,7 @@ export default function Home() {
         categories={categories}
         createExpense={createExpense}
         deleteAllExpenses={deleteAllExpenses}
+        expenseInputId={expenseInputId}
       />
       <hr style={{ width: '100%', border: '1px solid' }} />
       <ExpenseInfo expenses={expenses} />

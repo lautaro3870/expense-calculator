@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import {
   Box,
   Button,
@@ -16,13 +16,15 @@ import { useState } from 'react';
 type ExpenseFormProps = {
   categories: Category[];
   createExpense: (amount: number, category: Category) => boolean;
-  deleteAllExpenses: () => void,
+  deleteAllExpenses: () => void;
+  expenseInputId: string;
 };
 
 export default function ExpenseForm({
   categories,
   createExpense,
   deleteAllExpenses,
+  expenseInputId,
 }: ExpenseFormProps) {
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState<Category | null>(null);
@@ -50,6 +52,7 @@ export default function ExpenseForm({
         }}
       >
         <TextField
+          id={expenseInputId}
           size="small"
           label="Gasto"
           sx={{ width: '7rem' }}

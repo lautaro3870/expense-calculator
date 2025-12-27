@@ -22,7 +22,7 @@ export default function ExpenseTable({
 }: ExpenseTableProps) {
   return (
     <TableContainer component={Paper} sx={{ height: '100%', overflow: 'auto' }}>
-      <Table aria-label="simple table">
+      <Table stickyHeader aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>Gasto</TableCell>
@@ -41,7 +41,7 @@ export default function ExpenseTable({
                 ${expense.amount}
               </TableCell>
               <TableCell align="right">{expense.categoryName}</TableCell>
-              <TableCell align="right">{expense.date}</TableCell>
+              <TableCell align="right">{new Date(expense.date).toLocaleDateString('es-AR')}</TableCell>
               <TableCell align="right">
                 <Button
                   color="error"

@@ -32,24 +32,44 @@ export default function Home() {
     setCategories(categoriesConverted);
   };
 
-  const getCurrentDateString = (): string => {
-    const date = new Date();
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+  const updateAnnualReport = (expense: Expense) => {
+    const report = JSON.parse(localStorage.getItem('expensesReport') || '{}');
+
+    const date = new Date(expense.timestamp);
+    const monthKey = `${date.getFullYear()}-${String(
+      date.getMonth() + 1
+    ).padStart(2, '0')}`;
+
+    if (!report[monthKey]) {
+      report[monthKey] = {};
+    }
+
+    if (!report[monthKey][expense.categoryId]) {
+      report[monthKey][expense.categoryId] = {
+        categoryId: expense.categoryId,
+        categoryName: expense.categoryName,
+        total: 0,
+      };
+    }
+
+    report[monthKey][expense.categoryId].total += expense.amount;
+
+    localStorage.setItem('expensesReport', JSON.stringify(report));
   };
 
   const createExpense = (amount: number, category: Category): boolean => {
     if (!amount || !category?.id) return false;
 
+    // const now = new Date(2025, 6, 10);
+    const now = new Date();
+
     const newExpense: Expense = {
       id: uuidv4(),
       amount: Number(amount.toFixed(3)),
-      date: getCurrentDateString(),
+      date: now.toISOString(),
       categoryId: category.id,
       categoryName: category.category,
-      timestamp: Date.now(),
+      timestamp: now.getTime(),
     };
 
     setExpenses((prev) => {
@@ -57,7 +77,7 @@ export default function Home() {
       localStorage.setItem('expenses', JSON.stringify(updatedExpenses));
       return updatedExpenses;
     });
-
+    updateAnnualReport(newExpense);
     return true;
   };
 

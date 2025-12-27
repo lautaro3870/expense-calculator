@@ -11,3 +11,12 @@ export interface Expense {
   categoryName: string;
   timestamp: number;
 }
+
+export interface MonthlyCategoryReport {
+  month: string; // '2025-01'
+  categories: {
+    categoryId: string;
+    categoryName: string;
+    total: number;
+  }[];
+};

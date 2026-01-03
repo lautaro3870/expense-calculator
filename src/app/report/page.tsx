@@ -6,10 +6,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Category, MonthlyCategoryReport } from '../interaface';
+import { Category, CategoryTotal, MonthlyCategoryReport } from '../interaface';
 import { useEffect, useState } from 'react';
-import { Button, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
+import DownloadIcon from '@mui/icons-material/Download';
+import { CSVLink } from 'react-csv';
 
 export default function Report() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -17,6 +19,7 @@ export default function Report() {
     []
   );
   const [totalAmountSpent, setTotalAmountSpent] = useState('');
+  const [reportData, setReportData] = useState<Record<string, number>[]>([]);
   const stickyColumnWidth = 70;
 
   const getHeaderAndRowStyle = (zIndex: number = 3) => {
@@ -49,6 +52,23 @@ export default function Report() {
       '12': 'Diciembre',
     };
     return months[month[1] as string];
+  };
+
+  const getTotalByCategoryFromTable = (
+    report: MonthlyCategoryReport[],
+    categories: Category[]
+  ): CategoryTotal[] => {
+    return categories.map((category) => {
+      const total = report.reduce((sum, month) => {
+        const data = month.categories.find((c) => c.categoryId === category.id);
+        return sum + (data?.total ?? 0);
+      }, 0);
+
+      return {
+        categoryName: category.category,
+        total,
+      };
+    });
   };
 
   const calculateTotalSpent = (
@@ -102,6 +122,17 @@ export default function Report() {
       .sort((a, b) => b.month.localeCompare(a.month));
   };
 
+  const mapTotalsToSingleObjectArray = (
+    totals: { categoryName: string; total: number }[]
+  ): Array<Record<string, number>> => {
+    return [
+      totals.reduce((acc, { categoryName, total }) => {
+        acc[categoryName] = total;
+        return acc;
+      }, {} as Record<string, number>),
+    ];
+  };
+
   useEffect(() => {
     const listOfCategories = localStorage.getItem('categories');
     setCategories(listOfCategories ? JSON.parse(listOfCategories) : []);
@@ -113,6 +144,11 @@ export default function Report() {
       listOfCategories ? JSON.parse(listOfCategories) : []
     );
     setTotalAmountSpent(total.toFixed(2));
+    const report = getTotalByCategoryFromTable(
+      result,
+      listOfCategories ? JSON.parse(listOfCategories) : []
+    );
+    setReportData(mapTotalsToSingleObjectArray(report));
   }, []);
 
   return (
@@ -134,14 +170,33 @@ export default function Report() {
         }}
       >
         <Typography>Total gastado: ${totalAmountSpent || 0}</Typography>
-        <Button
-          sx={{ width: '2.5rem', margin: '0 auto', marginTop: '1rem' }}
-          variant="contained"
-          color="error"
-          onClick={deleteDataReport}
+        <Box
+          sx={{
+            marginTop: '1rem',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            gap: 1,
+          }}
         >
-          Limpiar
-        </Button>
+          <Button
+            sx={{ width: '2.5rem' }}
+            variant="contained"
+            color="error"
+            onClick={deleteDataReport}
+          >
+            Limpiar
+          </Button>
+          <Button variant="contained">
+            <CSVLink
+              data={reportData}
+              filename="categoriasAnual.csv"
+              className="btn btn-primary"
+            >
+              <DownloadIcon sx={{ marginTop: '0.3rem' }} />
+            </CSVLink>
+          </Button>
+        </Box>
       </div>
       <hr style={{ width: '100%', marginBottom: '1rem' }} />
       <div

@@ -100,7 +100,7 @@ export default function ExpenseInfo({ expenses }: ExpenseInfoProps) {
       >
         <Typography variant="body1">Restante a gastar: </Typography>
         <Typography
-          color={totalSpent > parseFloat(difference) ? 'error' : 'primary'}
+          color={parseFloat(difference) > 0 ? 'primary' : 'error'}
         >
           $ {difference || 0}
         </Typography>

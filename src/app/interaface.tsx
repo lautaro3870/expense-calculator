@@ -20,3 +20,8 @@ export interface MonthlyCategoryReport {
     total: number;
   }[];
 };
+
+export type CategoryTotal = {
+  categoryName: string;
+  total: number;
+};

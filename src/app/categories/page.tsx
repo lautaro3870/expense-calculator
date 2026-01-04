@@ -59,6 +59,7 @@ export default function Categories() {
         flexDirection: 'column',
         height: '100vh',
         boxSizing: 'border-box',
+        marginBottom: '4rem'
       }}
     >
       <form

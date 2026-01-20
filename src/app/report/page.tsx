@@ -6,7 +6,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Category, CategoryTotal, MonthlyCategoryReport } from '../interaface';
+import {
+  Category,
+  CategoryTotal,
+  Expense,
+  MonthlyCategoryReport,
+} from '../interaface';
 import { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
@@ -16,7 +21,7 @@ import { CSVLink } from 'react-csv';
 export default function Report() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [expensesReport, setExpensesReport] = useState<MonthlyCategoryReport[]>(
-    []
+    [],
   );
   const [totalAmountSpent, setTotalAmountSpent] = useState('');
   const [reportData, setReportData] = useState<Record<string, number>[]>([]);
@@ -56,7 +61,7 @@ export default function Report() {
 
   const getTotalByCategoryFromTable = (
     report: MonthlyCategoryReport[],
-    categories: Category[]
+    categories: Category[],
   ): CategoryTotal[] => {
     return categories.map((category) => {
       const total = report.reduce((sum, month) => {
@@ -73,12 +78,12 @@ export default function Report() {
 
   const calculateTotalSpent = (
     report: MonthlyCategoryReport[],
-    categories: Category[] | []
+    categories: Category[] | [],
   ): number => {
     return report.reduce((acc, month) => {
       const monthTotal = categories.reduce((sum, category) => {
         const categoryData = month.categories.find(
-          (c) => c.categoryId === category.id
+          (c) => c.categoryId === category.id,
         );
 
         return sum + (categoryData?.total ?? 0);
@@ -116,20 +121,23 @@ export default function Report() {
             categoryId: string;
             categoryName: string;
             total: number;
-          }[]
+          }[],
         ),
       }))
       .sort((a, b) => b.month.localeCompare(a.month));
   };
 
   const mapTotalsToSingleObjectArray = (
-    totals: { categoryName: string; total: number }[]
+    totals: { categoryName: string; total: number }[],
   ): Array<Record<string, number>> => {
     return [
-      totals.reduce((acc, { categoryName, total }) => {
-        acc[categoryName] = total;
-        return acc;
-      }, {} as Record<string, number>),
+      totals.reduce(
+        (acc, { categoryName, total }) => {
+          acc[categoryName] = total;
+          return acc;
+        },
+        {} as Record<string, number>,
+      ),
     ];
   };
 
@@ -138,15 +146,22 @@ export default function Report() {
     setCategories(listOfCategories ? JSON.parse(listOfCategories) : []);
     const raw = localStorage.getItem('expensesReport');
     const result = parseReport(raw || '[]');
-    setExpensesReport(raw ? result : []);
+    const finalReport = result.map((item: MonthlyCategoryReport) => ({
+      ...item,
+      categories: item.categories.map((category: any) => ({
+        ...category,
+        total: parseFloat(Number(category.total).toFixed(2)),
+      })),
+    }));
+    setExpensesReport(raw ? finalReport : []);
     const total = calculateTotalSpent(
       result,
-      listOfCategories ? JSON.parse(listOfCategories) : []
+      listOfCategories ? JSON.parse(listOfCategories) : [],
     );
     setTotalAmountSpent(total.toFixed(2));
     const report = getTotalByCategoryFromTable(
       result,
-      listOfCategories ? JSON.parse(listOfCategories) : []
+      listOfCategories ? JSON.parse(listOfCategories) : [],
     );
     setReportData(mapTotalsToSingleObjectArray(report));
   }, []);
@@ -240,7 +255,7 @@ export default function Report() {
 
                     {categories.map((category) => {
                       const categoryData = expense.categories.find(
-                        (c) => c.categoryId === category.id
+                        (c) => c.categoryId === category.id,
                       );
 
                       const value = categoryData ? categoryData.total : 0;

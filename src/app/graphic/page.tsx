@@ -22,22 +22,6 @@ ChartJS.register(
   Legend,
 );
 
-export const options = {
-  indexAxis: 'y' as const,
-  maintainAspectRatio: false,
-  elements: {
-    bar: {
-      borderWidth: 2,
-    },
-  },
-  responsive: true,
-  plugins: {
-    legend: {
-      display: false,
-    },
-  },
-};
-
 export default function Graphic() {
   const [chartData, setChartData] = useState({
     labels: [] as string[],
@@ -49,6 +33,22 @@ export default function Graphic() {
       },
     ],
   });
+
+  const options = {
+    indexAxis: 'y' as const,
+    maintainAspectRatio: false,
+    elements: {
+      bar: {
+        borderWidth: 2,
+      },
+    },
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  };
 
   const generateColor = (index: number, total: number) => {
     const hue = 145;

@@ -58,8 +58,6 @@ export default function Home() {
   };
 
   const persistMonthlyReport = (expenses: Expense[]) => {
-    if (!expenses.length) return;
-
     const raw = localStorage.getItem('expensesReport');
     const report = raw ? JSON.parse(raw) : {};
 
@@ -70,6 +68,7 @@ export default function Home() {
 
     report[monthKey] = buildMonthlyReportFromExpenses(expenses);
 
+    if (!Object.keys(report[monthKey]).length) delete report[monthKey];
     localStorage.setItem('expensesReport', JSON.stringify(report));
   };
 
@@ -113,6 +112,7 @@ export default function Home() {
         const newList: Expense[] = [];
         setExpenses(newList);
         window.localStorage.setItem('expenses', JSON.stringify(newList));
+        persistMonthlyReport(newList);
       } else if (result.isDenied) {
         Swal.close();
       }

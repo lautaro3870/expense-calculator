@@ -6,17 +6,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {
-  Category,
-  CategoryTotal,
-  Expense,
-  MonthlyCategoryReport,
-} from '../interaface';
+import { Category, CategoryTotal, MonthlyCategoryReport } from '../interaface';
 import { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
 import DownloadIcon from '@mui/icons-material/Download';
 import { CSVLink } from 'react-csv';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function Report() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -139,6 +135,13 @@ export default function Report() {
         {} as Record<string, number>,
       ),
     ];
+  };
+
+  const deleteRow = (month: string) => {
+    const newList = expensesReport.filter(
+      (e: MonthlyCategoryReport) => e.month !== month,
+    );
+    setExpensesReport(newList);
   };
 
   useEffect(() => {
@@ -267,9 +270,17 @@ export default function Report() {
                         </TableCell>
                       );
                     })}
-
                     <TableCell align="right">
                       <strong>{monthTotal.toFixed(2)}</strong>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        color="error"
+                        variant="contained"
+                        onClick={() => deleteRow(expense.month)}
+                      >
+                        <DeleteIcon />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 );

@@ -30,6 +30,7 @@ export const getTotalByCategoryFromTable = (
     return {
       categoryName: category.category,
       total,
+      categoryColor: category.color
     };
   });
 };

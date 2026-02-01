@@ -12,6 +12,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Category } from '../interaface';
 import { v4 as uuidv4 } from 'uuid';
 import { useEffect, useState } from 'react';
+import { MuiColorInput } from 'mui-color-input';
 
 export default function Categories() {
   const [inputValue, setInputValue] = useState('');
@@ -21,7 +22,7 @@ export default function Categories() {
     e.preventDefault();
     if (!inputValue) return;
     const categoryExsists = categories.some(
-      (c: Category) => c.category === inputValue.trim()
+      (c: Category) => c.category === inputValue.trim(),
     );
     if (categoryExsists) return;
     const category: Category = {
@@ -46,7 +47,16 @@ export default function Categories() {
     const newList = categories.filter((c: Category) => c.id !== id);
     setCategories(newList);
     window.localStorage.setItem('categories', JSON.stringify(newList));
-  }
+  };
+
+  const handleChange = (id: string, newValue: any) => {
+    const category = categories.find((c: Category) => c.id === id);
+    if (category) {
+      category.color = newValue;
+      setCategories([...categories]);
+      window.localStorage.setItem('categories', JSON.stringify(categories));
+    }
+  };
 
   useEffect(() => {
     getCategories();
@@ -59,7 +69,7 @@ export default function Categories() {
         flexDirection: 'column',
         height: '100vh',
         boxSizing: 'border-box',
-        marginBottom: '4rem'
+        marginBottom: '4rem',
       }}
     >
       <form
@@ -90,6 +100,7 @@ export default function Categories() {
           <TableHead>
             <TableRow>
               <TableCell align="left">Categoria</TableCell>
+              <TableCell align="right">Color</TableCell>
               <TableCell align="right">Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -103,7 +114,27 @@ export default function Categories() {
                   {category.category}
                 </TableCell>
                 <TableCell align="right">
-                  <Button color="error" variant="contained" onClick={() => deleteCategory(category.id)}>
+                  <MuiColorInput
+                    sx={{
+                      maxWidth: '70px',
+                      '& .MuiOutlinedInput-input': {
+                        display: 'none',
+                      },
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                      },
+                    }}
+                    format="rgb"
+                    value={category.color || '#8e8e8eff'}
+                    onChange={(e) => handleChange(category.id, e)}
+                  />
+                </TableCell>
+                <TableCell align="right">
+                  <Button
+                    color="error"
+                    variant="contained"
+                    onClick={() => deleteCategory(category.id)}
+                  >
                     <DeleteIcon />
                   </Button>
                 </TableCell>

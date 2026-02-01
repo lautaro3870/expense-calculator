@@ -1,6 +1,7 @@
 export interface Category {
   id: string;
   category: string;
+  color?: string;
 }
 
 export interface Expense {
@@ -24,4 +25,5 @@ export interface MonthlyCategoryReport {
 export type CategoryTotal = {
   categoryName: string;
   total: number;
+  categoryColor?: string;
 };

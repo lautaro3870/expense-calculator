@@ -68,7 +68,7 @@ export default function Graphic() {
       datasets: [
         {
           data: data.map((c) => c.total),
-          backgroundColor: data.map((_, i) => generateColor(i, data.length)),
+          backgroundColor: data.map((c) => c.categoryColor || '#8e8e8eff'),
           barThickness: 37,
         },
       ],

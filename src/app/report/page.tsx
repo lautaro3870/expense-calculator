@@ -6,13 +6,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Category, CategoryTotal, MonthlyCategoryReport } from '../interaface';
+import { Category, MonthlyCategoryReport } from '../interaface';
 import { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
 import DownloadIcon from '@mui/icons-material/Download';
 import { CSVLink } from 'react-csv';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { getTotalByCategoryFromTable, parseReport } from '../utils/utils';
 
 export default function Report() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -55,23 +56,6 @@ export default function Report() {
     return months[month[1] as string];
   };
 
-  const getTotalByCategoryFromTable = (
-    report: MonthlyCategoryReport[],
-    categories: Category[],
-  ): CategoryTotal[] => {
-    return categories.map((category) => {
-      const total = report.reduce((sum, month) => {
-        const data = month.categories.find((c) => c.categoryId === category.id);
-        return sum + (data?.total ?? 0);
-      }, 0);
-
-      return {
-        categoryName: category.category,
-        total,
-      };
-    });
-  };
-
   const calculateTotalSpent = (
     report: MonthlyCategoryReport[],
     categories: Category[] | [],
@@ -104,23 +88,6 @@ export default function Report() {
         Swal.close();
       }
     });
-  };
-
-  const parseReport = (raw: string): MonthlyCategoryReport[] => {
-    const parsed = JSON.parse(raw);
-
-    return Object.entries(parsed)
-      .map(([month, categories]) => ({
-        month,
-        categories: Object.values(
-          categories as {
-            categoryId: string;
-            categoryName: string;
-            total: number;
-          }[],
-        ),
-      }))
-      .sort((a, b) => b.month.localeCompare(a.month));
   };
 
   const mapTotalsToSingleObjectArray = (

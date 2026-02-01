@@ -10,7 +10,8 @@ import {
 } from 'chart.js';
 import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Category, CategoryTotal, MonthlyCategoryReport } from '../interaface';
+import { CategoryTotal } from '../interaface';
+import { getTotalByCategoryFromTable, parseReport } from '../utils/utils';
 
 ChartJS.register(
   CategoryScale,
@@ -72,40 +73,6 @@ export default function Graphic() {
         },
       ],
     };
-  };
-
-  const parseReport = (raw: string): MonthlyCategoryReport[] => {
-    const parsed = JSON.parse(raw);
-
-    return Object.entries(parsed)
-      .map(([month, categories]) => ({
-        month,
-        categories: Object.values(
-          categories as {
-            categoryId: string;
-            categoryName: string;
-            total: number;
-          }[],
-        ),
-      }))
-      .sort((a, b) => b.month.localeCompare(a.month));
-  };
-
-  const getTotalByCategoryFromTable = (
-    report: MonthlyCategoryReport[],
-    categories: Category[],
-  ): CategoryTotal[] => {
-    return categories.map((category) => {
-      const total = report.reduce((sum, month) => {
-        const data = month.categories.find((c) => c.categoryId === category.id);
-        return sum + (data?.total ?? 0);
-      }, 0);
-
-      return {
-        categoryName: category.category,
-        total,
-      };
-    });
   };
 
   useEffect(() => {

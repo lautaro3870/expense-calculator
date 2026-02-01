@@ -12,7 +12,6 @@ import { Box, Button, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
 import DownloadIcon from '@mui/icons-material/Download';
 import { CSVLink } from 'react-csv';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { getTotalByCategoryFromTable, parseReport } from '../utils/utils';
 
 export default function Report() {
@@ -102,13 +101,6 @@ export default function Report() {
         {} as Record<string, number>,
       ),
     ];
-  };
-
-  const deleteRow = (month: string) => {
-    const newList = expensesReport.filter(
-      (e: MonthlyCategoryReport) => e.month !== month,
-    );
-    setExpensesReport(newList);
   };
 
   useEffect(() => {
@@ -239,15 +231,6 @@ export default function Report() {
                     })}
                     <TableCell align="right">
                       <strong>{monthTotal.toFixed(2)}</strong>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        color="error"
-                        variant="contained"
-                        onClick={() => deleteRow(expense.month)}
-                      >
-                        <DeleteIcon />
-                      </Button>
                     </TableCell>
                   </TableRow>
                 );

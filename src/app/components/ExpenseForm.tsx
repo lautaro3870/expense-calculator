@@ -35,6 +35,8 @@ export default function ExpenseForm({
       const result = createExpense(parseFloat(amount), category);
       if (result) {
         setAmount('');
+        const input = document.getElementById(expenseInputId);
+        if (input) input.focus();
         setCategory(null);
       }
     }
